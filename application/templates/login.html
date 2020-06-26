@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <h1>Welcome to ABC Bank</h1>
+            <!-- {% if login %}
+            <h3>Let's get started.</h3>
+            {% else %}
+            <p>Already registered? <a href="{{ url_for('login')}}">Login</a></p>
+            {% endif %}     -->
+            <form name="login" action="" method="POST">
+                {{form.hidden_tag()}}
+                <p>
+                    {{ form.email.label }} <br>
+                    {{ form.email }}<br>
+
+                </p>
+                <p>
+                    {{ form.password.label }} <br>
+                    {{ form.password }}<br>
+                    
+                </p>
+                <p>
+                   
+                    {{ form.submit() }}<br>
+                    
+                </p>
+            </form>
+
+        </div>
+    </div>
+{% endblock %}
