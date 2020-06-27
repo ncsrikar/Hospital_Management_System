@@ -1,35 +1,22 @@
-from application import app
+from application import app,db
 from flask import render_template,request,redirect,flash,session
-from application.forms import LoginForm,RegisterForm
+from application.forms import LoginForm
 from application.models import Login_details
-courseData = [{"courseID":"1111","title":"PHP 101","description":"Intro to PHP","credits":3,"term":"Fall, Spring"}, {"courseID":"2222","title":"Java 1","description":"Intro to Java Programming","credits":4,"term":"Spring"}, {"courseID":"3333","title":"Adv PHP 201","description":"Advanced PHP Programming","credits":3,"term":"Fall"}, {"courseID":"4444","title":"Angular 1","description":"Intro to Angular","credits":3,"term":"Fall, Spring"}, {"courseID":"5555","title":"Java 2","description":"Advanced Java Programming","credits":4,"term":"Fall"}]
-#################################################################################################################
 
 
-
-
-
-################################################################################################################
 @app.route("/")
 def index():
     return render_template("index.html", login= False, index=True,loggedin = session.get('email'))
 
-@app.route("/courses")
-@app.route("/courses/<term>")
-def courses(term="Spring 2019"):
-    
-
-    return render_template("courses.html",courseData = courseData,courses=True,term=term)
 @app.route("/login",methods=["GET","POST"])
 def login():
     if(session.get('email')):
         return redirect("/")
     form = LoginForm()
-   
-    cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    account = ""
+
     if(form.validate_on_submit()):
-        cur.execute('SELECT * FROM logindata WHERE email = %s AND password = %s', (request.form.get("email"), request.form.get("password")))
-        account = cur.fetchone()
+        user = Login_details.query.filter
         if(account):
             flash("Logged in Successfully","success")
             session['email'] = request.form.get("email")
