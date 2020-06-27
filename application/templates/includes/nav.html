@@ -2,10 +2,11 @@
         <nav>
             <ul class="nav nav-pills">
                 <li class="nav-item"><a href="{{ url_for('index') }}" class="nav-link {% if index %} active {% endif %}">Home</a></li>
-                
                 {% if session.get("email") %}
+                <li class="nav-item"><a href="{{ url_for('patient') }}" class="nav-link {% if patient %} active {% endif %}">Patient</a></li>
+                <li class="nav-item"><a href="{{ url_for('medicines') }}" class="nav-link {% if medicines %} active {% endif %}">Medicines</a></li>
+                <li class="nav-item"><a href="{{ url_for('diagnostics') }}" class="nav-link {% if diagnostics %} active {% endif %}">Diagnostics</a></li>
                 <li class="nav-item"><a href="{{ url_for('logout') }}" class="nav-link {% if logout %} active {% endif %}">Logout</a></li>
-                <li class="nav-item"><a href="{{ url_for('enrollment') }}" class="nav-link {% if enrollment %} active {% endif %}">Enrollment</a></li>
                 {% else %}
                 <li class="nav-item"><a href="{{ url_for('login') }}" class="nav-link {% if login %} active {% endif %}">Login</a></li>
                 <li class="nav-item"><a href="{{ url_for('register') }}" class="nav-link {% if register %} active {% endif %}">Register</a></li>
