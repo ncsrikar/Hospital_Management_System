@@ -12,6 +12,7 @@ def index():
 def login():
     if(session.get('email')):
         return redirect("/")
+    
     form = LoginForm()
     account = ""
 
