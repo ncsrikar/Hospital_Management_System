@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <h1>Welcome to ABC Hospitals</h1>
+            {% if loggedin %}
+            <h3>Update Patient Details</h3>
+            <form action="" name="get_patient" method="POST">
+                {{form.hidden_tag()}}
+                <p>
+                    {{form.patient_id.label}}<br>
+                    {{form.patient_id}}<br>
+                </p>
+                <p class="btn-submit">
+                   
+                    {{ form.submit() }}
+                    
+                </p>
+            </form>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

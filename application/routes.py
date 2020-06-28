@@ -1,6 +1,6 @@
 from application import app,db
 from flask import render_template,request,redirect,flash,session
-from application.forms import LoginForm
+from application.forms import LoginForm, GetPatientInfo
 from application.models import login_details
 
 
@@ -37,7 +37,18 @@ def register():
 @app.route("/patient")
 def patient():
     if(session.get('email')):
-        return render_template("index.html", login= False, patient=True,loggedin = session.get('email'))
+        return render_template("patient.html", login= False, patient=True,loggedin = session.get('email'))
+    else:
+        flash("looks like you are not logged in! Please log in","danger")
+        return redirect("/login")
+
+@app.route("/patient_update", methods=['GET', 'POST'])
+def patientUpdate():
+    if(session.get('email')):
+        form = GetPatientInfo()
+        if(form.validate_on_submit()):
+            flash(form.patient_id., 'success')
+        return render_template("patient_update.html", login= False, patient=True,loggedin = session.get('email'), form=form)
     else:
         flash("looks like you are not logged in! Please log in","danger")
         return redirect("/login")

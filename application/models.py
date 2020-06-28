@@ -7,4 +7,3 @@ class login_details(db.Model):
     email = db.Column(db.String(255),unique=True)
     password = db.Column(db.String(255))
     accesslevel = db.Column(db.Integer)
-    
