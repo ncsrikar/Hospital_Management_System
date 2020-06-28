@@ -19,9 +19,11 @@ def login():
 
         user= login_details.query.filter_by(email=request.form.get('email')).first()
         password = user.password
+        accesslevel = user.accesslevel
         actual = request.form.get('password')
         if(check_password_hash(password,actual)):
             session['email'] = request.form.get("email")
+            session['accesslevel'] = int(accesslevel)
             return redirect("/") 
         else:
             flash("Oops! Something is wrong","danger")
@@ -34,29 +36,37 @@ def logout():
 
 @app.route("/register", methods = ['GET', 'POST'])
 def register():
-    form = Register()
-    if request.method == "POST":
-        Patient_SSN_ID = request.form['patient_ssn_id']
-        Patient_Name = request.form['name']
-        Patient_Age = request.form['age']
-        Date_of_Admission = datetime.strptime(request.form.get("date"), '%Y-%m-%dT%H:%M')
-        Date_of_Admission.strftime("%Y-%m-%d %H:%M:%S")
-    
-        Type_of_Bed = request.form['type']
-        Address = request.form['address']
-        State  =request.form['state']
-        City = request.form['city']
-        count = len(Patient.query.all()) + 1
-        print(Patient.query.column_descriptions)
-        Patient_ID = int('0'*(9-count) + str(count))
-        patient_status = "Something"
-        reg = Patient(patient_id = Patient_ID, patient_ssn = Patient_SSN_ID, patient_name = Patient_Name, patient_age = Patient_Age, patient_doj = Date_of_Admission, patient_rtype = Type_of_Bed, patient_address = Address, patient_state = State, patient_city = City,patient_status = patient_status)
-     
-        db.session.add(reg)
-        db.session.commit()
-        #return render_template("success.html")
-        flash("Registeration Success", "success" )
-    return render_template("register.html",register=True,form=form)
+    if(session.get("email")):
+        if(session.get("accesslevel") == 1):
+            form = Register()
+            if request.method == "POST":
+                Patient_SSN_ID = request.form['patient_ssn_id']
+                Patient_Name = request.form['name']
+                Patient_Age = request.form['age']
+                Date_of_Admission = datetime.strptime(request.form.get("date"), '%Y-%m-%dT%H:%M')
+                Date_of_Admission.strftime("%Y-%m-%d %H:%M:%S")
+            
+                Type_of_Bed = request.form['type']
+                Address = request.form['address']
+                State  =request.form['state']
+                City = request.form['city']
+                count = len(Patient.query.all()) + 1
+                print(Patient.query.column_descriptions)
+                Patient_ID = int('0'*(9-count) + str(count))
+                patient_status = "Something"
+                reg = Patient(patient_id = Patient_ID, patient_ssn = Patient_SSN_ID, patient_name = Patient_Name, patient_age = Patient_Age, patient_doj = Date_of_Admission, patient_rtype = Type_of_Bed, patient_address = Address, patient_state = State, patient_city = City,patient_status = patient_status)
+            
+                db.session.add(reg)
+                db.session.commit()
+                #return render_template("success.html")
+                flash("Registeration Success", "success" )
+            return render_template("register.html",register=True,form=form)
+        else:
+            flash("Sorry! You don't have the required permission to view this page,contact administrator",'danger')
+            return redirect("/")     
+    else:
+        flash("Sorry! You are not logged in Please LogIn",'danger')
+        return redirect("/login")
 
 @app.route("/patient")
 def patient():
@@ -69,14 +79,22 @@ def patient():
 @app.route("/medicines")
 def medicines():
     if(session.get('email')):
-        return render_template("index.html", login= False, medicines=True,loggedin = session.get('email'))
+        if(session.get("accesslevel")==1 or session.get("accesslevel")==2):
+            return render_template("index.html", login= False, medicines=True,loggedin = session.get('email'))
+        else:
+            flash("Sorry! You don't have the required permission to view this page,contact administrator",'danger')
+            return redirect("/")
     else:
         flash("looks like you are not logged in! Please log in","danger")
         return redirect("/login")
 @app.route("/diagnostics")
 def diagnostics():
     if(session.get('email')):
-        return render_template("index.html", login= False, diagnostics=True,loggedin = session.get('email'))
+        if(session.get("accesslevel")==1 or session.get("accesslevel")==3):
+            return render_template("index.html", login= False, diagnostics=True,loggedin = session.get('email'))
+        else:
+            flash("Sorry! You don't have the required permission to view this page,contact administrator",'danger')
+            return redirect("/")
     else:
         flash("looks like you are not logged in! Please log in","danger")
         return redirect("/login")
