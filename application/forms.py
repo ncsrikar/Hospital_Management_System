@@ -9,5 +9,5 @@ class LoginForm(FlaskForm):
     submit = SubmitField("login")
 
 class GetPatientInfo(FlaskForm):
-    patient_id = IntegerField("Patient ID", validators=[DataRequired()])
-    submit = SubmitField("get_patient")
+    patient_id = StringField("Patient ID", validators=[DataRequired()])
+    submit = SubmitField("Get Patient")
