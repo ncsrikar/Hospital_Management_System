@@ -1,0 +1,62 @@
+{% extends "layout.html" %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <h1>Registration Page</h1>
+            <!-- {% if login %}
+            <h3>Let's get started.</h3>
+            {% else %}
+            <p>Already registered? <a href="{{ url_for('login')}}">Login</a></p>
+            {% endif %}     -->
+            <form name="register" action="" method="POST">
+                {{form.hidden_tag()}}
+                <p>
+                    {{ form.patient_ssn_id.label }} <br>
+                    {{ form.patient_ssn_id }}<br>
+
+                </p>
+                <p>
+                    {{ form.name.label }} <br>
+                    {{ form.name }}<br>
+                    
+                </p>
+                <p>
+                    {{ form.age.label }} <br>
+                    {{ form.age }}<br>
+                    
+                </p>
+                <p>
+                    {{ form.date.label }} <br>
+                    {{ form.date(type="datetime-local") }}<br>
+                    
+                </p>
+                <p>
+                    {{ form.type.label }} <br>
+                    {{ form.type }}<br>
+                    
+                </p>
+                <p>
+                    {{ form.address.label }} <br>
+                    {{ form.address }}<br>
+                    
+                </p>
+                <p>
+                    {{ form.city.label }} <br>
+                    {{ form.city }}<br>
+                    
+                </p>
+                <p>
+                    {{ form.state.label }} <br>
+                    {{ form.state }}<br>
+                    
+                </p>
+                <p>
+                   
+                    {{ form.submit() }}<br>
+                    
+                </p>
+            </form>
+
+        </div>
+    </div>
+{% endblock %}
