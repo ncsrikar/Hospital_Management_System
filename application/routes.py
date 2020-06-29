@@ -60,7 +60,7 @@ def register():
                 db.session.commit()
                 #return render_template("success.html")
                 flash("Registeration Success", "success" )
-            return render_template("register.html",register=True,form=form)
+            return render_template("register.html",patient=True,form=form)
         else:
             flash("Sorry! You don't have the required permission to view this page,contact administrator",'danger')
             return redirect("/")     
@@ -71,7 +71,11 @@ def register():
 @app.route("/patient")
 def patient():
     if(session.get('email')):
-        return render_template("patient.html", login= False, patient=True,loggedin = session.get('email'))
+        if(session.get("accesslevel") == 1):
+            return render_template("patient.html", login= False, patient=True,loggedin = session.get('email'))
+        else:
+            flash("Sorry! You don't have the required permission to view this page,contact administrator",'danger')
+            return redirect("/") 
     else:
         flash("looks like you are not logged in! Please log in","danger")
         return redirect("/login")
@@ -79,32 +83,36 @@ def patient():
 @app.route("/patient_update", methods=['GET', 'POST'])
 def patientUpdate():
     if(session.get('email')):
-        form = GetPatientInfo()
-        form_details = UpdatePatientInfo()
-        print(form.validate_on_submit(), form_details.is_submitted())
-        if(form.validate_on_submit() or form_details.is_submitted()):
-            print('Test')
-            patient_id = request.form.get('patient_id')
-            patient_details = Patient.query.filter_by(patient_id = patient_id).first()
-            if(patient_details is None):
-                flash('No Patient Found', 'danger')
-            if(request.form.get('patient_id_got')):
-                patient_id_got = request.form.get('patient_id_got')
-                patient_details_update = Patient.query.filter_by(patient_id = patient_id_got).first()
-                patient_details_update.patient_ssn = request.form.get('patient_ssn_id')
-                patient_details_update.patient_name = request.form.get('name')
-                patient_details_update.patient_age = request.form.get('age')
-                patient_details_update.patient_rtype = request.form.get('type')
-                patient_details_update.patient_address = request.form.get('address')
-                patient_details_update.patient_city = request.form.get('city')
-                patient_details_update.patient_state = request.form.get('state')
-                print(patient_details_update.patient_city)
-                db.session.commit()
-                flash('Patient Details Updated Successfully', 'success')
+        if(session.get("accesslevel") == 1):
+            form = GetPatientInfo()
+            form_details = UpdatePatientInfo()
+            print(form.validate_on_submit(), form_details.is_submitted())
+            if(form.validate_on_submit() or form_details.is_submitted()):
+                print('Test')
+                patient_id = request.form.get('patient_id')
+                patient_details = Patient.query.filter_by(patient_id = patient_id).first()
+                if(patient_details is None):
+                    flash('No Patient Found', 'danger')
+                if(request.form.get('patient_id_got')):
+                    patient_id_got = request.form.get('patient_id_got')
+                    patient_details_update = Patient.query.filter_by(patient_id = patient_id_got).first()
+                    patient_details_update.patient_ssn = request.form.get('patient_ssn_id')
+                    patient_details_update.patient_name = request.form.get('name')
+                    patient_details_update.patient_age = request.form.get('age')
+                    patient_details_update.patient_rtype = request.form.get('type')
+                    patient_details_update.patient_address = request.form.get('address')
+                    patient_details_update.patient_city = request.form.get('city')
+                    patient_details_update.patient_state = request.form.get('state')
+                    print(patient_details_update.patient_city)
+                    db.session.commit()
+                    flash('Patient Details Updated Successfully', 'success')
+                    return render_template("patient_update.html", login= False, patient=True,loggedin = session.get('email'), form=form)
+                return render_template("patient_update.html", login= False, patient=True,loggedin = session.get('email'), form=form, form_details = form_details, patient_details = patient_details)
+            else:
                 return render_template("patient_update.html", login= False, patient=True,loggedin = session.get('email'), form=form)
-            return render_template("patient_update.html", login= False, patient=True,loggedin = session.get('email'), form=form, form_details = form_details, patient_details = patient_details)
         else:
-            return render_template("patient_update.html", login= False, patient=True,loggedin = session.get('email'), form=form)
+            flash("Sorry! You don't have the required permission to view this page,contact administrator",'danger')
+            return redirect("/")  
     else:
         flash("looks like you are not logged in! Please log in","danger")
         return redirect("/login")
@@ -112,16 +120,20 @@ def patientUpdate():
 @app.route("/patient_view", methods=['GET', 'POST'])
 def patientView():
     if(session.get('email')):
-        form = GetPatientInfo()
-        if(form.validate_on_submit()):
-            print('Test')
-            patient_id = request.form.get('patient_id')
-            patient_details = Patient.query.filter_by(patient_id = patient_id).first()
-            if(patient_details is None):
-                flash('No Patient Found', 'danger')
-            return render_template("patient_view.html", login= False, patient=True,loggedin = session.get('email'), form=form, patient_details = patient_details)
+        if(session.get("accesslevel") == 1):
+            form = GetPatientInfo()
+            if(form.validate_on_submit()):
+                print('Test')
+                patient_id = request.form.get('patient_id')
+                patient_details = Patient.query.filter_by(patient_id = patient_id).first()
+                if(patient_details is None):
+                    flash('No Patient Found', 'danger')
+                return render_template("patient_view.html", login= False, patient=True,loggedin = session.get('email'), form=form, patient_details = patient_details)
+            else:
+                return render_template("patient_view.html", login= False, patient=True,loggedin = session.get('email'), form=form)
         else:
-            return render_template("patient_view.html", login= False, patient=True,loggedin = session.get('email'), form=form)
+            flash("Sorry! You don't have the required permission to view this page,contact administrator",'danger')
+            return redirect("/")  
     else:
         flash("looks like you are not logged in! Please log in","danger")
         return redirect("/login")
@@ -129,29 +141,41 @@ def patientView():
 @app.route("/patient_delete", methods=['GET', 'POST'])
 def patientDelete():
     if(session.get('email')):
-        form = GetPatientInfo()
-        if(form.validate_on_submit()):
-            print('Test')
-            patient_id = request.form.get('patient_id')
-            patient_details = Patient.query.filter_by(patient_id = patient_id).first()
-            if(patient_details is None):
-                flash('No Patient Found', 'danger')
-            return render_template("patient_delete.html", login= False, patient=True,loggedin = session.get('email'), form=form, patient_details = patient_details)
+        if(session.get("accesslevel") == 1):
+            form = GetPatientInfo()
+            if(form.validate_on_submit()):
+                print('Test')
+                patient_id = request.form.get('patient_id')
+                patient_details = Patient.query.filter_by(patient_id = patient_id).first()
+                if(patient_details is None):
+                    flash('No Patient Found', 'danger')
+                return render_template("patient_delete.html", login= False, patient=True,loggedin = session.get('email'), form=form, patient_details = patient_details)
+            else:
+                return render_template("patient_delete.html", login= False, patient=True,loggedin = session.get('email'), form=form)
         else:
-            return render_template("patient_delete.html", login= False, patient=True,loggedin = session.get('email'), form=form)
+            flash("Sorry! You don't have the required permission to view this page,contact administrator",'danger')
+            return redirect("/")
     else:
         flash("looks like you are not logged in! Please log in","danger")
         return redirect("/login")
 
 @app.route('/patient_delete_confirm')
 def deletePatient():
-    patient_id = request.args.get('id')
-    print(patient_id)
-    patient_details = Patient.query.filter_by(patient_id = patient_id).first()
-    db.session.delete(patient_details)
-    db.session.commit()
-    flash('Patient Delete Successful', 'success')
-    return redirect('/patient')
+    if(session.get('email')):
+        if(session.get("accesslevel") == 1):
+            patient_id = request.args.get('id')
+            print(patient_id)
+            patient_details = Patient.query.filter_by(patient_id = patient_id).first()
+            db.session.delete(patient_details)
+            db.session.commit()
+            flash('Patient Delete Successful', 'success')
+            return redirect('/patient')
+        else:
+            flash("Sorry! You don't have the required permission to perform this operation, contact administrator",'danger')
+            return redirect("/")
+    else:
+        flash("looks like you are not logged in! Please log in","danger")
+        return redirect("/login")
 
 @app.route("/medicines")
 def medicines():
