@@ -10,8 +10,8 @@ class login_details(db.Model):
     accesslevel = db.Column(db.Integer)
 class Patient(db.Model):
     __tablename__ = 'patient_details'
-    patient_id = db.Column(db.Integer, unique = True)
-    patient_ssn = db.Column(db.Integer, primary_key = True)
+    patient_id = db.Column(db.Integer, primary_key = True)
+    patient_ssn = db.Column(db.Integer)
     patient_name = db.Column(db.String(255))
     patient_address= db.Column(db.String(1000))
     patient_city =  db.Column(db.String(255))
@@ -21,10 +21,4 @@ class Patient(db.Model):
     patient_rtype = db.Column(db.String(255))
     patient_status = db.Column(db.String(255))
     
-class Medicines(db.Model):
-    __tablename__ = "medicines"
-    medicine_id = db.Column(db.Integer, primary_key = True)
-    medicine_name = db.Column(db.String(255))
-    medicine_rate = db.Column(db.Integer)   
-    medicine_quantity = db.Column(db.Integer)
-     
+    

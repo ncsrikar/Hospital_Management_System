@@ -1,0 +1,31 @@
+<link rel="stylesheet" href="static/css/update_patient.css">
+{% extends "layout.html" %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <h1 class="text-center">Welcome to ABC Hospitals</h1>
+            {% if loggedin %}
+            <h3 class="text-center">Delete Patient Details</h3>
+            <form action="" name="get_patient" method="POST">
+                {{form.hidden_tag()}}
+                <div class="search">
+                    {{form.patient_id(placeholder='Enter Patient ID')}}
+                    {{ form.submit_get_details() }}
+                </div>
+            </form>
+            <hr>
+            <br><br>
+            {% if patient_details %}
+                <p>Patient SSN ID: {{patient_details.patient_ssn}}</p>
+                <p>Patient Name: {{patient_details.patient_name}}</p>
+                <p>Patient Age: {{patient_details.patient_age}}</p>
+                <p>Patient DOJ: {{patient_details.patient_doj}}</p>
+                <p>Patient Ward: {{patient_details.patient_rtype}}</p>
+                <p>Patient Status: {{patient_details.patient_status}}</p>
+                <p>Patient Address: {{patient_details.patient_address}}, {{patient_details.patient_city}}, {{patient_details.patient_state}}</p>
+                <a class="btn btn-info" href="patient_delete_confirm?id={{patient_details.patient_id}}">Delete?</a>
+            {% endif %}
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
