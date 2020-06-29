@@ -1,0 +1,64 @@
+<!-- <link rel="stylesheet" href="static/css/view_all.css"> -->
+{% extends "layout.html" %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <h1 class="text-center">Welcome to ABC Hospitals</h1>
+            {% if loggedin %}
+            <h3 class="text-center">View Patient Details</h3>
+            
+            <hr>
+            <br><br>
+            <style>
+                table, th, td {
+                  border: 1px solid black;
+                  /* border-collapse: collapse; */
+                }
+                th, td {
+                  padding: 1%;
+                }
+                td{
+                    background-color: ghostwhite;
+                }
+                th{
+                    background-color: grey;
+                }
+                </style>
+
+            {% if view_det %}
+            <table style="width: 100%">
+                <tr>
+                    <th> Patient SSN ID </th>
+                    <th> Patient Name </th>
+                    <th> Patient Age </th>
+                    <th> Patient DOJ </th>
+                    <th> Patient Ward </th>
+                    <th> Patient Status </th>
+                    <th>  Patient Address  </th>
+                </tr>
+
+                {% for i in view_det %} 
+                <tr>
+                <td>{{i.patient_ssn}}</td>
+                <td>{{i.patient_name}}</td>
+                <td>{{i.patient_age}}</td>
+                <td>{{i.patient_doj}}</td>
+                <td>{{i.patient_rtype}}</td>
+                {%if i.patient_status == "Active" %}
+                <td style="background-color: rgb(56, 179, 19)" >{{i.patient_status}}</td>
+                {% else %}
+                <td style="background-color: red">{{i.patient_status}}</td>
+                {% endif %}
+                <td>{{i.patient_address}}, {{i.patient_city}}, {{i.patient_state}}</td>
+               </tr>
+               {% endfor %}
+               
+            </table>
+            {% else %}
+            <p> No data available </p>
+            {% endif %}
+
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
