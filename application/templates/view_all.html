@@ -1,4 +1,4 @@
-<!-- <link rel="stylesheet" href="static/css/update_patient.css"> -->
+<!-- <link rel="stylesheet" href="static/css/view_all.css"> -->
 {% extends "layout.html" %}
 {% block content %}
     <div class="row">
@@ -6,46 +6,58 @@
             <h1 class="text-center">Welcome to ABC Hospitals</h1>
             {% if loggedin %}
             <h3 class="text-center">View Patient Details</h3>
-            <!-- <form action="" name="get_patient" method="POST">
-                {{form.hidden_tag()}}
-                <div class="search">
-                    {{form.patient_id(placeholder='Enter Patient ID')}}
-                    {{ form.submit_get_details() }}
-                </div>
-            </form> -->
+            
             <hr>
             <br><br>
-            <table>
+            <style>
+                table, th, td {
+                  border: 1px solid black;
+                  /* border-collapse: collapse; */
+                }
+                th, td {
+                  padding: 1%;
+                }
+                td{
+                    background-color: ghostwhite;
+                }
+                th{
+                    background-color: grey;
+                }
+                </style>
+
+            {% if view_det %}
+            <table style="width: 100%">
                 <tr>
-                    <th> Patient SSN ID</th>
-                    <th> Patient Name</th>
-                    <th> Patient Age</th>
-                    <th> Patient DOJ</th>
-                    <th> Patient Ward</th>
-                    <th> Patient Status</th>
-                    <th> Patient Address</th>
+                    <th> Patient SSN ID </th>
+                    <th> Patient Name </th>
+                    <th> Patient Age </th>
+                    <th> Patient DOJ </th>
+                    <th> Patient Ward </th>
+                    <th> Patient Status </th>
+                    <th>  Patient Address  </th>
                 </tr>
-                {% for i in view_det %}
+
+                {% for i in view_det %} 
                 <tr>
-                <td>{{view_det.patient_ssn}}</td>
-                <td>{{view_det.patient_name}}</td>
-                <td>{{view_det.patient_age}}</td>
-                <td>{{view_det.patient_doj}}</td>
-                <td>{{view_det.patient_rtype}}</td>
-                <td>{{view_det.patient_status}}</td>
-                <td>{{view_det.patient_address}}, {{view_det.patient_city}}, {{view_det.patient_state}}</td>
+                <td>{{i.patient_ssn}}</td>
+                <td>{{i.patient_name}}</td>
+                <td>{{i.patient_age}}</td>
+                <td>{{i.patient_doj}}</td>
+                <td>{{i.patient_rtype}}</td>
+                {%if i.patient_status == "Active" %}
+                <td style="background-color: rgb(56, 179, 19)" >{{i.patient_status}}</td>
+                {% else %}
+                <td style="background-color: red">{{i.patient_status}}</td>
+                {% endif %}
+                <td>{{i.patient_address}}, {{i.patient_city}}, {{i.patient_state}}</td>
                </tr>
                {% endfor %}
+               
             </table>
-            <!-- {% for i in view_det %}
-                <p>Patient SSN ID: {{patient_details.patient_ssn}}</p>
-                <p>Patient Name: {{patient_details.patient_name}}</p>
-                <p>Patient Age: {{patient_details.patient_age}}</p>
-                <p>Patient DOJ: {{patient_details.patient_doj}}</p>
-                <p>Patient Ward: {{patient_details.patient_rtype}}</p>
-                <p>Patient Status: {{patient_details.patient_status}}</p>
-                <p>Patient Address: {{patient_details.patient_address}}, {{patient_details.patient_city}}, {{patient_details.patient_state}}</p>
-            {% endif %} -->
+            {% else %}
+            <p> No data available </p>
+            {% endif %}
+
             {% endif %}
         </div>
     </div>

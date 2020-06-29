@@ -145,9 +145,9 @@ def viewAll():
             view_det = Patient.query.order_by(Patient.patient_id).all()
             if(view_det is None):
                 flash('No Patient Found', 'danger')
-            # return render_template("patient_view.html", login= False, patient=True,loggedin = session.get('email'), form=form, view_det = view_det)
+                return render_template("view_all.html", login= False, patient=True,loggedin = session.get('email'), view_det = view_det)
             else:
-                return render_template("view_all.html", login= False, patient=True,loggedin = session.get('email'))
+                return render_template("view_all.html", login= False, patient=True,loggedin = session.get('email'), view_det = view_det)
         else:
             flash("Sorry! You don't have the required permission to view this page,contact administrator",'danger')
             return redirect("/")
