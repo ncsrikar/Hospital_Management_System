@@ -21,4 +21,10 @@ class Patient(db.Model):
     patient_rtype = db.Column(db.String(255))
     patient_status = db.Column(db.String(255))
     
-    
+class Medicines(db.Model):
+    __tablename__ = "medicines"
+    medicine_id = db.Column(db.Integer, primary_key = True)
+    medicine_name = db.Column(db.String(255))
+    medicine_rate = db.Column(db.Integer)   
+    medicine_quantity = db.Column(db.Integer)
+     

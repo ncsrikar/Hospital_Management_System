@@ -53,7 +53,7 @@ def register():
                 count = len(Patient.query.all()) + 1
                 print(Patient.query.column_descriptions)
                 Patient_ID = int('0'*(9-count) + str(count))
-                patient_status = "Something"
+                patient_status = "Active"
                 reg = Patient(patient_id = Patient_ID, patient_ssn = Patient_SSN_ID, patient_name = Patient_Name, patient_age = Patient_Age, patient_doj = Date_of_Admission, patient_rtype = Type_of_Bed, patient_address = Address, patient_state = State, patient_city = City,patient_status = patient_status)
             
                 db.session.add(reg)
