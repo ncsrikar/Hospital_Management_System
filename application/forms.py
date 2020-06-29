@@ -13,7 +13,7 @@ class Register(FlaskForm):
     name = StringField("Name",validators=[DataRequired()])
     age = IntegerField("Age", validators=[DataRequired()])
     date = DateTimeField("Date",validators=[DataRequired()],format='%Y-%m-%dT%H:%M')
-    type = SelectField("Type", choices=[('General ward','General ward'),('Semi Sharing','Semi Sharing'),('Single Room','Single Room')])
+    type = SelectField("Type", choices=[('General ward','General ward'),('Semi Sharing','Semi Sharing'),('Single Room','Single Room')],validators=[DataRequired()])
     address = StringField("Address",validators=[DataRequired()])
     city = StringField("City",validators=[DataRequired()])
     state = StringField("State",validators=[DataRequired()])
@@ -33,3 +33,10 @@ class UpdatePatientInfo(FlaskForm):
     city = StringField("City",validators=[DataRequired()])
     state = StringField("State",validators=[DataRequired()])
     submit_update = SubmitField("Update Patient Details")
+class GetMedicineNames(FlaskForm):
+    medicine_name = SelectField("Medicine Name", choices = [])
+    check_avialable = SubmitField("Check Availability")
+class AddMedicine(FlaskForm):
+    name = StringField("Medicine Name")
+    quantity = IntegerField("Quantity of Medicine to be Issued",validators=[DataRequired()])
+    add = SubmitField("Add the Medicine")

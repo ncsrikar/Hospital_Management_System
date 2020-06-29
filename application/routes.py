@@ -1,13 +1,14 @@
 from application import app,db
 from flask import render_template,request,redirect,flash,session
-from application.forms import LoginForm,Register, GetPatientInfo, UpdatePatientInfo
-from application.models import login_details,Patient
+from application.forms import LoginForm,Register, GetPatientInfo, UpdatePatientInfo,GetMedicineNames,AddMedicine
+from application.models import login_details,Patient,Patient_Medicine,Medicine
 from werkzeug.security import generate_password_hash,check_password_hash
 from datetime import datetime
+################
 @app.route("/")
 def index():
     return render_template("index.html", login= False, index=True,loggedin = session.get('email'))
-
+##############################
 @app.route("/login",methods=["GET","POST"])
 def login():
     if(session.get('email')):
@@ -28,12 +29,14 @@ def login():
         else:
             flash("Oops! Something is wrong","danger")
     return render_template("login.html",login=True,form = form)
+#########################
 @app.route("/logout")
 def logout():
     session['email'] = False
+    session['accesslevel'] =False
     return redirect("/")
 
-
+##############################
 @app.route("/register", methods = ['GET', 'POST'])
 def register():
     if(session.get("email")):
@@ -67,7 +70,7 @@ def register():
     else:
         flash("Sorry! You are not logged in Please LogIn",'danger')
         return redirect("/login")
-
+###########################################################
 @app.route("/patient")
 def patient():
     if(session.get('email')):
@@ -79,7 +82,7 @@ def patient():
     else:
         flash("looks like you are not logged in! Please log in","danger")
         return redirect("/login")
-
+##################################################################
 @app.route("/patient_update", methods=['GET', 'POST'])
 def patientUpdate():
     if(session.get('email')):
@@ -116,6 +119,7 @@ def patientUpdate():
     else:
         flash("looks like you are not logged in! Please log in","danger")
         return redirect("/login")
+#####################################################
 
 @app.route("/patient_view", methods=['GET', 'POST'])
 def patientView():
@@ -137,6 +141,7 @@ def patientView():
     else:
         flash("looks like you are not logged in! Please log in","danger")
         return redirect("/login")
+####################################################
 
 @app.route("/patient_delete", methods=['GET', 'POST'])
 def patientDelete():
@@ -158,6 +163,7 @@ def patientDelete():
     else:
         flash("looks like you are not logged in! Please log in","danger")
         return redirect("/login")
+######################################################
 
 @app.route('/patient_delete_confirm')
 def deletePatient():
@@ -176,18 +182,112 @@ def deletePatient():
     else:
         flash("looks like you are not logged in! Please log in","danger")
         return redirect("/login")
-
-@app.route("/medicines")
+########################################################
+names_medicines = []
+@app.route("/medicines" , methods=['GET', 'POST'])
 def medicines():
+    global names_medicines
+    names_medicines = []
     if(session.get('email')):
         if(session.get("accesslevel")==1 or session.get("accesslevel")==2):
-            return render_template("index.html", login= False, medicines=True,loggedin = session.get('email'))
+            form = GetPatientInfo()
+            if(form.validate_on_submit()):
+                print('Test')
+                patient_id = request.form.get('patient_id')
+                patient_details = Patient.query.filter_by(patient_id = patient_id).first()
+                if(patient_details is None):
+                    flash('No Patient Found', 'danger')
+                else:
+                    medicines = Patient_Medicine.query.filter_by(patient_id = patient_id).all()
+                    
+                    for i in medicines:
+                        quant_issued = i.quantity_issued
+                        medicine = Medicine.query.filter_by(medicine_id = i.medicine_id).first()
+                        name = medicine. medicine_name
+                        rate = medicine.medicine_rate
+                        price = quant_issued*rate
+                        names_medicines.append((name,quant_issued,rate,price))
+                    print(names_medicines)
+                return render_template("medicines.html", login= False, medicines=True,loggedin = session.get('email'), form=form, patient_details = patient_details,names_medicines = names_medicines)
+            else:
+                return render_template("medicines.html", login= False, medicines=True,loggedin = session.get('email'), form=form)
+            return render_template("medicines.html", login= False, medicines=True,loggedin = session.get('email'))
         else:
             flash("Sorry! You don't have the required permission to view this page,contact administrator",'danger')
             return redirect("/")
     else:
         flash("looks like you are not logged in! Please log in","danger")
         return redirect("/login")
+############################################################
+
+@app.route("/issue_medicines/<patient_id>/<medicine_id>",methods=['GET', 'POST'])
+def issue_medicines(patient_id,medicine_id):
+    if(session.get('email')):
+        if(session.get("accesslevel")==1 or session.get("accesslevel")==2):
+            form = GetMedicineNames()
+            form_add = AddMedicine()
+            medicines = Medicine.query.order_by(Medicine.medicine_id).all()
+            form.medicine_name.choices = [(medicine.medicine_name,medicine.medicine_name) for medicine in medicines]
+            form.medicine_name.choices = [(0, "Choose a Medicine")] +form.medicine_name.choices
+
+            if(form.validate_on_submit() or form_add.is_submitted()):
+                name = request.form.get("medicine_name") 
+                if(name == None):
+                    name = request.form.get("name")
+                id = Medicine.query.filter_by(medicine_name = name).first().medicine_id
+                if(name == '0'):
+                    flash("Please select a valid Option","danger")
+                    return render_template("issue_medicine.html", availabilty = 0, form = form,loggedin = session.get('email'))
+                    
+                quant = Medicine.query.filter_by(medicine_name = name).first().medicine_quantity 
+                if(quant>0):
+                    availabilty = True
+                    print("here")
+                    if(request.form.get("quantity")):
+                        print("Just here")
+                        quantity = request.form.get("quantity")
+                        quantity = int(quantity)
+                        if(quantity < quant):
+                            patient_id = int(patient_id)
+                            all_medicines = Patient_Medicine.query.filter_by(patient_id = patient_id).all()
+                            all_medicineslist = []
+                            for i in all_medicines:
+                                all_medicineslist.append(i.medicine_id)
+                            if(id in all_medicineslist):
+                                patient_medicine = Patient_Medicine.query.filter_by(medicine_id = id,patient_id = int(patient_id)).first()
+                                patient_medicine.quantity_issued = patient_medicine.quantity_issued+ quantity
+                                db.session.commit()
+                                flash("Updated the Value of the existing medicine and updated stock","success")
+                            else:
+                                new_medicine = Patient_Medicine(patient_id = patient_id, medicine_id = id, quantity_issued = quantity)
+                                db.session.add(new_medicine)
+                                db.session.commit()
+                                flash("Successfully added new medicine to the patient and updated stock","success")
+                            change_total_medicines = Medicine.query.filter_by(medicine_id = id).first()
+                            change_total_medicines.medicine_quantity = change_total_medicines.medicine_quantity-quantity
+                            db.session.commit()
+                            return render_template("issue_medicine.html", availabilty = 0, form = form,loggedin = session.get('email'),name = name)
+                        else:
+                            flash("Please select value less than {}".format(quant),"danger")
+                            return render_template("issue_medicine.html", availabilty = availabilty, form = form,form_add = form_add,loggedin = session.get('email'),name = name)
+                    return render_template("issue_medicine.html", availabilty = availabilty, form = form,form_add = form_add,loggedin = session.get('email'),name = name)
+                else:
+                    availabilty = False
+                    return render_template("issue_medicine.html", availabilty = availabilty, form = form,loggedin = session.get('email'))
+                
+                
+            else:
+                print("here I am ")
+                return render_template("issue_medicine.html", form = form,loggedin = session.get('email'))  
+        else:
+            flash("Sorry! You don't have the required permission to view this page,contact administrator",'danger')
+            return redirect("/index")
+    else:
+        flash("looks like you are not logged in! Please log in","danger")
+        return redirect("/login")
+
+
+##############################################################
 @app.route("/diagnostics")
 def diagnostics():
     if(session.get('email')):
@@ -199,3 +299,4 @@ def diagnostics():
     else:
         flash("looks like you are not logged in! Please log in","danger")
         return redirect("/login")
+#############################################################

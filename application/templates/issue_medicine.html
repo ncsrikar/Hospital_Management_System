@@ -1,0 +1,45 @@
+<link rel="stylesheet" href="../../static/css/update_patient.css">
+{% extends "layout.html" %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <h1 class="text-center">Welcome to ABC Hospitals</h1>
+            {% if loggedin %}
+            <h3 class="text-center">Update Medicine Details</h3>
+            <form action="" name="Get_availability" method="POST">
+                {{form.hidden_tag()}}
+                <div class="search">
+                    {{form.medicine_name(placeholder='Enter Medicine Name')}}
+                    {{ form.check_avialable() }}
+                </div>
+            </form>
+            <hr>
+            <br><br>
+            {% if availabilty %}
+            <p style="color:green"> Medicine is Availaible please enter the Quantity</p>
+            {% elif availabilty == 0 %}
+            <p style="color:red"></p>
+            {% elif availabilty == False %}
+            <p style="color:red"> Medicine is Not Availaible please choose a different medicine</p>
+            {% endif %}
+            {% if form_add %}
+              <form name="issue_medicine" action="" method="POST">
+                {{form.hidden_tag()}}
+                <p>
+                    {{ form_add.name.label }} <br>
+                    {{ form_add.name(value = name,readonly = true) }}<br>
+
+                </p>
+                <p>
+                    {{ form_add.quantity.label }} <br>
+                    {{ form_add.quantity() }}<br>
+
+                </p>
+                <p>
+                    {{ form_add.add() }} <br>
+            </form>
+            {% endif %}
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

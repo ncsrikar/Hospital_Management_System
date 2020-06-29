@@ -20,5 +20,18 @@ class Patient(db.Model):
     patient_doj = db.Column(db.DateTime, default = datetime.now)
     patient_rtype = db.Column(db.String(255))
     patient_status = db.Column(db.String(255))
-    
-    
+
+class Medicine(db.Model):
+    __tablename__ ="medicines" 
+    medicine_id = db.Column(db.Integer, primary_key = True)
+    medicine_name = db.Column(db.String(255))
+    medicine_rate = db.Column(db.Integer)
+    medicine_quantity = db.Column(db.Integer)
+
+
+class Patient_Medicine(db.Model):
+    __tablename__ ="patient_medicine"
+    id = db.Column(db.Integer,primary_key = True)
+    patient_id = db.Column(db.Integer)
+    medicine_id = db.Column(db.Integer)
+    quantity_issued = db.Column(db.Integer)
