@@ -5,6 +5,7 @@
             <h1>Welcome to ABC Hospitals</h1>
             {% if loggedin %}
             <h3>Let's get started.</h3>
+            <a href="{{ url_for('patient') }}" class="btn btn-info">Patient Dashbaord</a>
             {% else %}
             <p>Already registered? <a href="{{ url_for('login')}}">Login</a></p>
             {% endif %}    
