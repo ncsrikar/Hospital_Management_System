@@ -143,6 +143,24 @@ def patientView():
         return redirect("/login")
 ####################################################
 
+@app.route("/view_all", methods=['GET'])
+def viewAll():
+    if(session.get('email')):
+        if(session.get("accesslevel") == 1):
+            view_det = Patient.query.order_by(Patient.patient_id).all()
+            if(view_det is None):
+                flash('No Patient Found', 'danger')
+                return render_template("view_all.html", login= False, patient=True,loggedin = session.get('email'), view_det = view_det)
+            else:
+                return render_template("view_all.html", login= False, patient=True,loggedin = session.get('email'), view_det = view_det)
+        else:
+            flash("Sorry! You don't have the required permission to view this page,contact administrator",'danger')
+            return redirect("/")
+    else:
+        flash("looks like you are not logged in! Please log in","danger")
+        return redirect("/login")
+
+
 @app.route("/patient_delete", methods=['GET', 'POST'])
 def patientDelete():
     if(session.get('email')):
