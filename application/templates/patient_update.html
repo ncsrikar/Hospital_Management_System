@@ -1,0 +1,71 @@
+<link rel="stylesheet" href="static/css/update_patient.css">
+{% extends "layout.html" %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <h1 class="text-center">Welcome to ABC Hospitals</h1>
+            {% if loggedin %}
+            <h3 class="text-center">Update Patient Details</h3>
+            <form action="" name="get_patient" method="POST">
+                {{form.hidden_tag()}}
+                <div class="search">
+                    {{form.patient_id(placeholder='Enter Patient ID')}}
+                    {{ form.submit_get_details() }}
+                </div>
+            </form>
+            <hr>
+            <br><br>
+            {% if form_details %}
+            <form name="update_details" action="" method="POST">
+                {{form.hidden_tag()}}
+                <p>
+                    {{ form_details.patient_id_got.label }} <br>
+                    {{ form_details.patient_id_got(value=patient_details.patient_id, readonly=True) }}<br>
+
+                </p>
+                <p>
+                    {{ form_details.patient_ssn_id.label }} <br>
+                    {{ form_details.patient_ssn_id(value=patient_details.patient_ssn) }}<br>
+
+                </p>
+                <p>
+                    {{ form_details.name.label }} <br>
+                    {{ form_details.name(value=patient_details.patient_name) }}<br>
+                    
+                </p>
+                <p>
+                    {{ form_details.age.label }} <br>
+                    {{ form_details.age(value=patient_details.patient_age) }}<br>
+                    
+                </p>
+                <p>
+                    {{ form_details.type.label }} <br>
+                    {{ form_details.type }}<br>
+                    
+                </p>
+                <p>
+                    {{ form_details.address.label }} <br>
+                    {{ form_details.address(value=patient_details.patient_address) }}<br>
+                    
+                </p>
+                <p>
+                    {{ form_details.city.label }} <br>
+                    {{ form_details.city(value=patient_details.patient_city) }}<br>
+                    
+                </p>
+                <p>
+                    {{ form_details.state.label }} <br>
+                    {{ form_details.state(value=patient_details.patient_state) }}<br>
+                    
+                </p>
+                <p>
+                   
+                    {{ form_details.submit_update() }}<br>
+                    
+                </p>
+            </form>
+            {% endif %}
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
