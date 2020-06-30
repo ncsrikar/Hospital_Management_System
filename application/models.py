@@ -35,3 +35,16 @@ class Patient_Medicine(db.Model):
     patient_id = db.Column(db.Integer)
     medicine_id = db.Column(db.Integer)
     quantity_issued = db.Column(db.Integer)
+
+class Tests(db.Model):
+    __tablename__ = "tests"
+    test_id = db.Column(db.Integer, primary_key = True)
+    test_name = db.Column(db.String(255))
+    test_charge = db.Column(db.Integer)
+
+class Patient_Tests(db.Model):
+    __tablename__ = "patient_tests"
+    id = db.Column(db.Integer,primary_key = True)
+    test_id = db.Column(db.Integer)
+    patient_id = db.Column(db.Integer)
+    

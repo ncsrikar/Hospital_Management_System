@@ -41,3 +41,10 @@ class AddMedicine(FlaskForm):
     name = StringField("Medicine Name")
     quantity = IntegerField("Quantity of Medicine to be Issued",validators=[DataRequired()])
     add = SubmitField("Add the Medicine")
+
+class GetDiagnostics(FlaskForm):
+    test_name = SelectField("Test Name", choices= [])
+
+class AddDiagnostics(FlaskForm):
+    t_name = StringField("Test Name")
+    t_add = SubmitField("Add Diagnostic")
