@@ -391,7 +391,7 @@ def add_diagnostics(test_id, patient_id):
                         flash("Successfully added new diagnostic test","success")
                         
                 db.session.commit()
-                return render_template("add_diag.html", form = form,loggedin = session.get('email'),name = name,charge= charge)
+                return render_template("add_diag.html", form = form, form_add = form_add, loggedin = session.get('email'),name = name,charge= charge)
 
                 
                 
