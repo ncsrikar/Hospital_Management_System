@@ -44,6 +44,7 @@ class AddMedicine(FlaskForm):
 
 class GetDiagnostics(FlaskForm):
     test_name = SelectField("Test Name", choices= [])
+    add_di = SubmitField("Get Info")
 
 class AddDiagnostics(FlaskForm):
     t_name = StringField("Test Name")

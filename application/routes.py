@@ -367,33 +367,36 @@ def add_diagnostics(test_id, patient_id):
   
                 if(name == None):
                     name = request.form.get("t_name")
-                id = Tests.query.filter_by(test_name = t_name).first().test_id
-                charge = Tests.query.filter_by(test_name = t_name).first().test_charge
+                id = Tests.query.filter_by(test_name = name).first().test_id
+                charge = Tests.query.filter_by(test_name = name).first().test_charge
                 
                 if(name == '0'):
                     flash("Please select a valid Option","danger")
                     return render_template("add_diag.html", form = form,loggedin = session.get('email'))
                      
-    
-                patient_id = int(patient_id)
-                all_tests = Patient_Tests.query.filter_by(patient_id = patient_id).all()
-                all_testlist = []
-                for i in all_tests:
-                    all_testlist.append(i.test_id)
-                    if(id in all_testlist):
-                        patient_test = Patient_Tests.query.filter_by(test_id = id,patient_id = int(patient_id)).first()
-                        db.session.commit()
-                        # flash("","success")
-                    else:
-                        new_test = Patient_Tests(test_id = id, patient_id = patient_id)
-                        db.session.add(new_test)
-                        db.session.commit()
-                        flash("Successfully added new diagnostic test","success")
-                        
-                db.session.commit()
-                return render_template("add_diag.html", form = form, form_add = form_add, loggedin = session.get('email'),name = name,charge= charge)
+                if(request.form.get("t_name")):
+                    patient_id = int(patient_id)
+                    all_tests = Patient_Tests.query.filter_by(patient_id = patient_id).all()
+                    all_testlist = []
+                    for i in all_tests:
+                        all_testlist.append(i.test_id)
+                        if(id in all_testlist):
+                            patient_test = Patient_Tests.query.filter_by(test_id = id,patient_id = int(patient_id)).first()
+                            db.session.commit()
+                            # flash("","success")
+                        else:
+                            new_test = Patient_Tests(test_id = id, patient_id = patient_id)
+                            db.session.add(new_test)
+                            db.session.commit()
+                            flash("Successfully added new diagnostic test","success")
+                            
+                    db.session.commit()
+                    return render_template("add_diag.html", form = form, form_add = form_add, loggedin = session.get('email'),name = name,charge= charge)
 
-                
+                else:
+                    return render_template("add_diag.html", form = form, form_add = form_add, loggedin = session.get('email'),name = name,charge= charge)
+
+
                 
             else:
                 print("here I am ")
