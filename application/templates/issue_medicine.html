@@ -9,14 +9,16 @@
             <form action="" name="Get_availability" method="POST">
                 {{form.hidden_tag()}}
                 <div class="search">
-                    {{form.medicine_name(placeholder='Enter Medicine Name')}}
+                    {{form.medicine_name(placeholder='Enter Medicine Name',class="selectbox")}}
+                    
                     {{ form.check_avialable() }}
                 </div>
+                {{form.medicine_quantity(placeholder='Enter Quantity of the Medicine required')}}
             </form>
             <hr>
             <br><br>
             {% if availabilty %}
-            <p style="color:green"> Medicine is Availaible please enter the Quantity</p>
+            <p style="color:green"> Medicine is Availaible </p>
             {% elif availabilty == 0 %}
             <p style="color:red"></p>
             {% elif availabilty == False %}
@@ -32,8 +34,12 @@
                 </p>
                 <p>
                     {{ form_add.quantity.label }} <br>
-                    {{ form_add.quantity() }}<br>
+                    {{ form_add.quantity(value = quantity, readonly = true) }}<br>
 
+                </p>
+                <p>
+                    Cost of one medicine is:<b> {{rate}}</b> <br>
+                    Total Cost of selected Quantity is: <b>{{total_cost}}</b>
                 </p>
                 <p>
                     {{ form_add.add() }} <br>
