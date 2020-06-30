@@ -1,7 +1,7 @@
 from application import app,db
 from flask import render_template,request,redirect,flash,session
-from application.forms import LoginForm,Register, GetPatientInfo, UpdatePatientInfo,GetMedicineNames,AddMedicine
-from application.models import login_details,Patient,Patient_Medicine,Medicine
+from application.forms import LoginForm,Register, GetPatientInfo, UpdatePatientInfo,GetMedicineNames,AddMedicine, GetDiagnostics, AddDiagnostics
+from application.models import login_details,Patient,Patient_Medicine,Medicine, Tests, Patient_Tests
 from werkzeug.security import generate_password_hash,check_password_hash
 from datetime import datetime
 ################
@@ -221,7 +221,7 @@ def medicines():
                     for i in medicines:
                         quant_issued = i.quantity_issued
                         medicine = Medicine.query.filter_by(medicine_id = i.medicine_id).first()
-                        name = medicine. medicine_name
+                        name = medicine.medicine_name
                         rate = medicine.medicine_rate
                         price = quant_issued*rate
                         names_medicines.append((name,quant_issued,rate,price))
@@ -314,11 +314,35 @@ def issue_medicines(patient_id,medicine_id):
 
 
 ##############################################################
-@app.route("/diagnostics")
+names_diag = []
+@app.route("/diagnostics", methods = ['GET', 'POST'] )
 def diagnostics():
+    global names_diag
+    names_diag = []
     if(session.get('email')):
         if(session.get("accesslevel")==1 or session.get("accesslevel")==3):
-            return render_template("index.html", login= False, diagnostics=True,loggedin = session.get('email'))
+            form = GetPatientInfo()
+            if(form.validate_on_submit()):
+                print('Test')
+                patient_id = request.form.get('patient_id')
+                patient_details = Patient.query.filter_by(patient_id = patient_id).first()
+                if(patient_details is None):
+                    flash('No Patient Found', 'danger')
+                else:
+                    diagnostics = Patient_Tests.query.filter_by(patient_id = patient_id).all()
+                    
+                    for i in diagnostics:
+                        # quant_issued = i.quantity_issued
+                        test = Tests.query.filter_by(test_id = i.test_id).first()
+                        name = test.test_name
+                        charge = test.test_charge
+                        # price = quant_issued*rate
+                        names_diag.append((name,charge))
+                    print(names_diag)
+                return render_template("diagnostics.html", login= False, diagnostics=True,loggedin = session.get('email'), form=form, patient_details = patient_details,names_diag = names_diag)
+            else:
+                return render_template("diagnostics.html", login= False, diagnostics=True,loggedin = session.get('email'), form=form)
+            return render_template("diagnostics.html", login= False, diagnostics=True,loggedin = session.get('email'))
         else:
             flash("Sorry! You don't have the required permission to view this page,contact administrator",'danger')
             return redirect("/")
@@ -326,3 +350,60 @@ def diagnostics():
         flash("looks like you are not logged in! Please log in","danger")
         return redirect("/login")
 #############################################################
+
+@app.route("/add_diagnostics/<patient_id>/<test_id>",methods=['GET', 'POST'])
+def add_diagnostics(test_id, patient_id):
+    if(session.get('email')):
+        if(session.get("accesslevel")==1 or session.get("accesslevel")==3):
+            form = GetDiagnostics()
+            form_add = AddDiagnostics()
+            diagnostics = Tests.query.order_by(Tests.test_id).all()
+            form.test_name.choices = [(diag.test_name, diag.test_name) for diag in diagnostics]
+            form.test_name.choices = [(0, "Choose a Test")] +form.test_name.choices
+
+            if(form.validate_on_submit() or form_add.is_submitted()):
+                name = request.form.get("test_name") 
+                
+  
+                if(name == None):
+                    name = request.form.get("t_name")
+                id = Tests.query.filter_by(test_name = name).first().test_id
+                charge = Tests.query.filter_by(test_name = name).first().test_charge
+                
+                if(name == '0'):
+                    flash("Please select a valid Option","danger")
+                    return render_template("add_diag.html", form = form,loggedin = session.get('email'))
+                     
+                if(request.form.get("t_name")):
+                    patient_id = int(patient_id)
+                    all_tests = Patient_Tests.query.filter_by(patient_id = patient_id).all()
+                    all_testlist = []
+                    for i in all_tests:
+                        all_testlist.append(i.test_id)
+                        if(id in all_testlist):
+                            patient_test = Patient_Tests.query.filter_by(test_id = id,patient_id = int(patient_id)).first()
+                            db.session.commit()
+                            # flash("","success")
+                        else:
+                            new_test = Patient_Tests(test_id = id, patient_id = patient_id)
+                            db.session.add(new_test)
+                            db.session.commit()
+                            flash("Successfully added new diagnostic test","success")
+                            
+                    db.session.commit()
+                    return render_template("add_diag.html", form = form, form_add = form_add, loggedin = session.get('email'),name = name,charge= charge)
+
+                else:
+                    return render_template("add_diag.html", form = form, form_add = form_add, loggedin = session.get('email'),name = name,charge= charge)
+
+
+                
+            else:
+                print("here I am ")
+                return render_template("add_diag.html", form = form,loggedin = session.get('email'))  
+        else:
+            flash("Sorry! You don't have the required permission to view this page,contact administrator",'danger')
+            return redirect("/index")
+    else:
+        flash("looks like you are not logged in! Please log in","danger")
+        return redirect("/login")

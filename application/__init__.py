@@ -7,6 +7,21 @@ app = Flask(__name__)
 app.config.from_object(Config)
 db = SQLAlchemy(app)
 from application import routes
+# from application.models import Patient_Tests
+
+# pat_test1 = Patient_Tests(test_id = 1, patient_id = 1)
+# db.session.add(pat_test1)
+# db.session.commit()
+
+# diagnostics1 = Tests(test_name = 'Thyroid', test_charge = 3000)
+# db.session.add(diagnostics1)
+# diagnostics2 = Tests(test_name = "Lipid", test_charge = 2000)
+# db.session.add(diagnostics2)
+# diagnostics3 = Tests(test_name = "ECG", test_charge = 5000)
+# db.session.add(diagnostics3)
+# diagnostics4 = Tests(test_name = "CBP", test_charge = 1500)
+# db.session.add(diagnostics4)
+# db.session.commit()
 
 # from application.models import Medicines
 

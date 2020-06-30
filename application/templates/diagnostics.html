@@ -1,0 +1,47 @@
+<link rel="stylesheet" href="static/css/update_patient.css">
+{% extends "layout.html" %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <h1 class="text-center">Welcome to ABC Hospitals</h1>
+            {% if loggedin %}
+            <h3 class="text-center">View Patient Details</h3>
+            <form action="" name="get_patient" method="POST">
+                {{form.hidden_tag()}}
+                <div class="search">
+                    {{form.patient_id(placeholder='Enter Patient ID')}}
+                    {{ form.submit_get_details() }}
+                </div>
+            </form>
+            <hr>
+            <br><br>
+            {% if patient_details %}
+                <p>Patient SSN ID: {{patient_details.patient_ssn}}</p>
+                <p>Patient Name: {{patient_details.patient_name}}</p>
+                <p>Patient Age: {{patient_details.patient_age}}</p>
+                <p>Patient DOJ: {{patient_details.patient_doj}}</p>
+                <p>Patient Ward: {{patient_details.patient_rtype}}</p>
+                <p>Patient Status: {{patient_details.patient_status}}</p>
+                <p>Patient Address: {{patient_details.patient_address}}, {{patient_details.patient_city}}, {{patient_details.patient_state}}</p>
+            {% endif %}
+            {% if names_diag %}
+            <h3 class="text-center">Diagnostics Conducted</h3>
+            <table class="table">
+                <tr>
+                  <th>Name of the test</th>
+                  <th>Amount</th>
+                </tr>
+                {% for diag_name, price in  names_diag %}
+                <tr>
+                  <td>{{diag_name}}</td>
+                  <td>{{price}}</td>
+                </tr>
+                {% endfor %}
+              </table>
+             <a href = {{ url_for("add_diagnostics", test_id = 0, patient_id = patient_details.patient_id ) }}>Add Diagnostics</a>
+            {%  endif %}
+            
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

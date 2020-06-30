@@ -1,0 +1,37 @@
+<link rel="stylesheet" href="../../static/css/update_patient.css">
+{% extends "layout.html" %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <h1 class="text-center">Welcome to ABC Hospitals</h1>
+            {% if loggedin %}
+            <h3 class="text-center">Update Medicine Details</h3>
+            <form action="" name="Get_availability" method="POST">
+                {{form.hidden_tag()}}
+                <div class="search">
+                    {{form.test_name(placeholder='Enter Test',class="selectbox")}}
+                    {{form.add_di()}}
+                </div>
+            </form>
+            <hr>
+            <br><br>
+
+            {% if form_add %}
+              <form name="add_diag" action="" method="POST">
+                {{form.hidden_tag()}}
+                <p>
+                    {{ form_add.t_name.label }} <br>
+                    {{ form_add.t_name(value = name,readonly = true) }}<br>
+
+                </p>
+                <p>
+                    Amount:<b> {{charge}}</b> <br>
+                </p>
+                <p>
+                    {{ form_add.t_add() }} <br>
+            </form>
+            {% endif %}
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
