@@ -35,6 +35,7 @@ class UpdatePatientInfo(FlaskForm):
     submit_update = SubmitField("Update Patient Details")
 class GetMedicineNames(FlaskForm):
     medicine_name = SelectField("Medicine Name", choices = [])
+    medicine_quantity = IntegerField("Quantity of Medicine to be Issued",validators=[DataRequired()])
     check_avialable = SubmitField("Check Availability")
 class AddMedicine(FlaskForm):
     name = StringField("Medicine Name")

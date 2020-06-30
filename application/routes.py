@@ -250,47 +250,55 @@ def issue_medicines(patient_id,medicine_id):
 
             if(form.validate_on_submit() or form_add.is_submitted()):
                 name = request.form.get("medicine_name") 
+                quantity = request.form.get("medicine_quantity")
+                
+  
                 if(name == None):
                     name = request.form.get("name")
+                if(quantity == None):
+                    quantity = request.form.get("quantity")
+                quantity = int(quantity)
                 id = Medicine.query.filter_by(medicine_name = name).first().medicine_id
+                rate = Medicine.query.filter_by(medicine_name = name).first().medicine_rate
+                total_cost = quantity*rate
                 if(name == '0'):
                     flash("Please select a valid Option","danger")
                     return render_template("issue_medicine.html", availabilty = 0, form = form,loggedin = session.get('email'))
                     
                 quant = Medicine.query.filter_by(medicine_name = name).first().medicine_quantity 
-                if(quant>0):
+                if(quantity<quant):
                     availabilty = True
                     print("here")
                     if(request.form.get("quantity")):
                         print("Just here")
                         quantity = request.form.get("quantity")
                         quantity = int(quantity)
-                        if(quantity < quant):
-                            patient_id = int(patient_id)
-                            all_medicines = Patient_Medicine.query.filter_by(patient_id = patient_id).all()
-                            all_medicineslist = []
-                            for i in all_medicines:
-                                all_medicineslist.append(i.medicine_id)
-                            if(id in all_medicineslist):
-                                patient_medicine = Patient_Medicine.query.filter_by(medicine_id = id,patient_id = int(patient_id)).first()
-                                patient_medicine.quantity_issued = patient_medicine.quantity_issued+ quantity
-                                db.session.commit()
-                                flash("Updated the Value of the existing medicine and updated stock","success")
-                            else:
-                                new_medicine = Patient_Medicine(patient_id = patient_id, medicine_id = id, quantity_issued = quantity)
-                                db.session.add(new_medicine)
-                                db.session.commit()
-                                flash("Successfully added new medicine to the patient and updated stock","success")
-                            change_total_medicines = Medicine.query.filter_by(medicine_id = id).first()
-                            change_total_medicines.medicine_quantity = change_total_medicines.medicine_quantity-quantity
+                        patient_id = int(patient_id)
+                        all_medicines = Patient_Medicine.query.filter_by(patient_id = patient_id).all()
+                        all_medicineslist = []
+                        for i in all_medicines:
+                            all_medicineslist.append(i.medicine_id)
+                        if(id in all_medicineslist):
+                            patient_medicine = Patient_Medicine.query.filter_by(medicine_id = id,patient_id = int(patient_id)).first()
+                            patient_medicine.quantity_issued = patient_medicine.quantity_issued+ quantity
                             db.session.commit()
-                            return render_template("issue_medicine.html", availabilty = 0, form = form,loggedin = session.get('email'),name = name)
+                            flash("Updated the Value of the existing medicine and updated stock","success")
                         else:
-                            flash("Please select value less than {}".format(quant),"danger")
-                            return render_template("issue_medicine.html", availabilty = availabilty, form = form,form_add = form_add,loggedin = session.get('email'),name = name)
-                    return render_template("issue_medicine.html", availabilty = availabilty, form = form,form_add = form_add,loggedin = session.get('email'),name = name)
+                            new_medicine = Patient_Medicine(patient_id = patient_id, medicine_id = id, quantity_issued = quantity)
+                            db.session.add(new_medicine)
+                            db.session.commit()
+                            flash("Successfully added new medicine to the patient and updated stock","success")
+                        change_total_medicines = Medicine.query.filter_by(medicine_id = id).first()
+                        change_total_medicines.medicine_quantity = change_total_medicines.medicine_quantity-quantity
+                        db.session.commit()
+                        return render_template("issue_medicine.html", availabilty = 0, form = form,loggedin = session.get('email'),name = name,quantity = quantity,rate= rate, total_cost = total_cost)
+                        # else:
+                            
+                        #     return render_template("issue_medicine.html", availabilty = availabilty, form = form,form_add = form_add,loggedin = session.get('email'),name = name)
+                    return render_template("issue_medicine.html", availabilty = availabilty, form = form,form_add = form_add,loggedin = session.get('email'),name = name,quantity = quantity,rate= rate, total_cost = total_cost)
                 else:
                     availabilty = False
+                    flash("Please select value less than {}".format(quant),"danger")
                     return render_template("issue_medicine.html", availabilty = availabilty, form = form,loggedin = session.get('email'))
                 
                 
