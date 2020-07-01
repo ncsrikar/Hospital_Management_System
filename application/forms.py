@@ -6,7 +6,7 @@ class LoginForm(FlaskForm):
     email = StringField("Email", validators=[DataRequired()])
     password = PasswordField("Password",validators=[DataRequired()])
     rememberme = BooleanField("rememberme")
-    submit = SubmitField("login")
+    submit = SubmitField("Login")
 
 class Register(FlaskForm):
     patient_ssn_id = IntegerField("Patient SSN ID", validators=[DataRequired()])
@@ -17,7 +17,7 @@ class Register(FlaskForm):
     address = StringField("Address",validators=[DataRequired()])
     city = StringField("City",validators=[DataRequired()])
     state = StringField("State",validators=[DataRequired()])
-    submit = SubmitField("register")
+    submit = SubmitField("Register")
 
 class GetPatientInfo(FlaskForm):
     patient_id = IntegerField("Patient ID", validators=[DataRequired()])

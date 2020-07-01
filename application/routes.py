@@ -53,22 +53,26 @@ def register():
                 Address = request.form['address']
                 State  =request.form['state']
                 City = request.form['city']
-                count = len(Patient.query.all()) + 1
+                count = len(Patient.query.all())
                 print(Patient.query.column_descriptions)
-                Patient_ID = int('0'*(9-count) + str(count))
+                initial = 100000000
+                Patient_ID = initial+count
                 patient_status = "Active"
+                if(int(Patient_Age)>=1000): 
+                    flash("The age is too large, please cross check", "danger")
+                    return render_template("register.html",patient=True,form=form,loggedin=session.get('email'))
                 reg = Patient(patient_id = Patient_ID, patient_ssn = Patient_SSN_ID, patient_name = Patient_Name, patient_age = Patient_Age, patient_doj = Date_of_Admission, patient_rtype = Type_of_Bed, patient_address = Address, patient_state = State, patient_city = City,patient_status = patient_status)
             
                 db.session.add(reg)
                 db.session.commit()
                 #return render_template("success.html")
                 flash("Registeration Success", "success" )
-            return render_template("register.html",patient=True,form=form)
+            return render_template("register.html",patient=True,form=form,loggedin=session.get('email'))
         else:
             flash("Sorry! You don't have the required permission to view this page,contact administrator",'danger')
             return redirect("/")     
     else:
-        flash("Sorry! You are not logged in Please LogIn",'danger')
+        flash("Looks like you are not logged in! Please log in","danger")
         return redirect("/login")
 ###########################################################
 @app.route("/patient")
@@ -80,7 +84,7 @@ def patient():
             flash("Sorry! You don't have the required permission to view this page,contact administrator",'danger')
             return redirect("/") 
     else:
-        flash("looks like you are not logged in! Please log in","danger")
+        flash("Looks like you are not logged in! Please log in","danger")
         return redirect("/login")
 ##################################################################
 @app.route("/patient_update", methods=['GET', 'POST'])
@@ -117,7 +121,7 @@ def patientUpdate():
             flash("Sorry! You don't have the required permission to view this page,contact administrator",'danger')
             return redirect("/")  
     else:
-        flash("looks like you are not logged in! Please log in","danger")
+        flash("Looks like you are not logged in! Please log in","danger")
         return redirect("/login")
 #####################################################
 
@@ -130,6 +134,7 @@ def patientView():
                 print('Test')
                 patient_id = request.form.get('patient_id')
                 patient_details = Patient.query.filter_by(patient_id = patient_id).first()
+
                 if(patient_details is None):
                     flash('No Patient Found', 'danger')
                 return render_template("patient_view.html", login= False, patient=True,loggedin = session.get('email'), form=form, patient_details = patient_details)
@@ -139,7 +144,7 @@ def patientView():
             flash("Sorry! You don't have the required permission to view this page,contact administrator",'danger')
             return redirect("/")  
     else:
-        flash("looks like you are not logged in! Please log in","danger")
+        flash("Looks like you are not logged in! Please log in","danger")
         return redirect("/login")
 ####################################################
 
@@ -179,7 +184,7 @@ def patientDelete():
             flash("Sorry! You don't have the required permission to view this page,contact administrator",'danger')
             return redirect("/")
     else:
-        flash("looks like you are not logged in! Please log in","danger")
+        flash("Looks like you are not logged in! Please log in","danger")
         return redirect("/login")
 ######################################################
 
@@ -198,7 +203,7 @@ def deletePatient():
             flash("Sorry! You don't have the required permission to perform this operation, contact administrator",'danger')
             return redirect("/")
     else:
-        flash("looks like you are not logged in! Please log in","danger")
+        flash("Looks like you are not logged in! Please log in","danger")
         return redirect("/login")
 ########################################################
 names_medicines = []
@@ -228,13 +233,13 @@ def medicines():
                     print(names_medicines)
                 return render_template("medicines.html", login= False, medicines=True,loggedin = session.get('email'), form=form, patient_details = patient_details,names_medicines = names_medicines)
             else:
-                return render_template("medicines.html", login= False, medicines=True,loggedin = session.get('email'), form=form)
+                return render_template("medicines.html", login= False, medicines=True,loggedin = session.get('email'), form=form,patient_details = None)
             return render_template("medicines.html", login= False, medicines=True,loggedin = session.get('email'))
         else:
             flash("Sorry! You don't have the required permission to view this page,contact administrator",'danger')
             return redirect("/")
     else:
-        flash("looks like you are not logged in! Please log in","danger")
+        flash("Looks like you are not logged in! Please log in","danger")
         return redirect("/login")
 ############################################################
 
@@ -309,7 +314,7 @@ def issue_medicines(patient_id,medicine_id):
             flash("Sorry! You don't have the required permission to view this page,contact administrator",'danger')
             return redirect("/index")
     else:
-        flash("looks like you are not logged in! Please log in","danger")
+        flash("Looks like you are not logged in! Please log in","danger")
         return redirect("/login")
 
 
@@ -347,7 +352,7 @@ def diagnostics():
             flash("Sorry! You don't have the required permission to view this page,contact administrator",'danger')
             return redirect("/")
     else:
-        flash("looks like you are not logged in! Please log in","danger")
+        flash("Looks like you are not logged in! Please log in","danger")
         return redirect("/login")
 #############################################################
 
@@ -360,7 +365,7 @@ def add_diagnostics(test_id, patient_id):
             diagnostics = Tests.query.order_by(Tests.test_id).all()
             form.test_name.choices = [(diag.test_name, diag.test_name) for diag in diagnostics]
             form.test_name.choices = [(0, "Choose a Test")] +form.test_name.choices
-
+            
             if(form.validate_on_submit() or form_add.is_submitted()):
                 name = request.form.get("test_name") 
                 
@@ -380,32 +385,27 @@ def add_diagnostics(test_id, patient_id):
                     all_testlist = []
                     for i in all_tests:
                         all_testlist.append(i.test_id)
-                        if(id in all_testlist):
-                            patient_test = Patient_Tests.query.filter_by(test_id = id,patient_id = int(patient_id)).first()
-                            db.session.commit()
-                            # flash("","success")
-                        else:
-                            new_test = Patient_Tests(test_id = id, patient_id = patient_id)
-                            db.session.add(new_test)
-                            db.session.commit()
-                            flash("Successfully added new diagnostic test","success")
-                            
+                    # if(id in all_testlist):
+                    #     patient_test = Patient_Tests.query.filter_by(test_id = id,patient_id = int(patient_id)).first()
+                    #     db.session.commit()
+                    #     # flash("","success")
+                    # else:
+                    new_test = Patient_Tests(test_id = id, patient_id = patient_id)
+                    db.session.add(new_test)
                     db.session.commit()
+                    flash("Successfully added new diagnostic test","success")
                     return render_template("add_diag.html",diagnostics=True, form = form, form_add = form_add, loggedin = session.get('email'),name = name,charge= charge)
 
                 else:
                     return render_template("add_diag.html",diagnostics=True, form = form, form_add = form_add, loggedin = session.get('email'),name = name,charge= charge)
-
-
-                
             else:
-                print("here I am ")
+                print(" Form not Working!!")
                 return render_template("add_diag.html",diagnostics=True, form = form,loggedin = session.get('email'))  
         else:
             flash("Sorry! You don't have the required permission to view this page,contact administrator",'danger')
             return redirect("/index")
     else:
-        flash("looks like you are not logged in! Please log in","danger")
+        flash("Looks like you are not logged in! Please log in","danger")
         return redirect("/login")
 
 @app.route("/patient_discharge")
@@ -424,12 +424,20 @@ def patientDischarge():
             patient_id = request.args.get('id')
             print(patient_id)
             patient_details = Patient.query.filter_by(patient_id = patient_id).first()
+            
+        
             if(patient_details is None):
                 flash('No Patient Found', 'danger')
             else:
+                current_status = patient_details.patient_status
+                if(current_status == "Active"):
+                    status = True
+                else:
+                    status = False
                 today = datetime.today()
                 days = (today - patient_details.patient_doj).days
                 print(int(days))
+
                 if(patient_details.patient_rtype == 'General ward'):
                     ward_charges = general_price * int(days)
                     room_price = general_price
@@ -461,12 +469,12 @@ def patientDischarge():
                     diag_total = diag_total + charge
                     names_diag.append((name,charge))
                 print(names_diag)
-            return render_template("billing.html", patient = True, loggedin = session.get('email'), patient_details = patient_details,names_medicines = names_medicines, medicine_total = medicine_total, ward_charges = ward_charges, days = days, room_price = room_price, names_diag = names_diag, diag_total = diag_total)
+            return render_template("billing.html", patient = True, loggedin = session.get('email'), patient_details = patient_details,names_medicines = names_medicines, medicine_total = medicine_total, ward_charges = ward_charges, days = days, room_price = room_price, names_diag = names_diag, diag_total = diag_total,status = status)
         else:
             flash("Sorry! You don't have the required permission to perform this operation, contact administrator",'danger')
             return redirect("/")
     else:
-        flash("looks like you are not logged in! Please log in","danger")
+        flash("Looks like you are not logged in! Please log in","danger")
         return redirect("/login")
 
 @app.route('/confirm_discharge')
@@ -488,5 +496,5 @@ def discharge():
             flash("Sorry! You don't have the required permission to perform this operation, contact administrator",'danger')
             return redirect("/")
     else:
-        flash("looks like you are not logged in! Please log in","danger")
+        flash("Looks like you are not logged in! Please log in","danger")
         return redirect("/login")

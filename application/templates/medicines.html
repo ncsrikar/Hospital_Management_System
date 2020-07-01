@@ -1,4 +1,5 @@
-<link rel="stylesheet" href="static/css/update_patient.css">
+<link rel="stylesheet" href="../static/css/update_patient.css">
+
 {% extends "layout.html" %}
 {% block content %}
     <div class="row">
@@ -23,6 +24,7 @@
                 <p>Patient Ward: {{patient_details.patient_rtype}}</p>
                 <p>Patient Status: {{patient_details.patient_status}}</p>
                 <p>Patient Address: {{patient_details.patient_address}}, {{patient_details.patient_city}}, {{patient_details.patient_state}}</p>
+                
             {% endif %}
             {% if names_medicines %}
             <h3 class="text-center">Medicines Issued</h3>
@@ -37,14 +39,25 @@
                 <tr>
                   <td>{{medicine_name}}</td>
                   <td>{{quant_issued}}</td>
-                  <td>{{rate}}</td>
-                  <td>{{price}}</td>
+                  <td>₹{{rate}}</td>
+                  <td>₹{{price}}</td>
                 </tr>
                 {% endfor %}
               </table>
-             <a href = {{ url_for("issue_medicines", patient_id = patient_details.patient_id, medicine_id = 0  ) }}>Issue New Medicines</a>
             {%  endif %}
-            
+            {% if patient_details %}
+            <a style="display: block;
+                width: 30%;
+                height: 8%;
+                background: #2196F3;
+                padding: 10px;
+                text-align: center;
+                border-radius: 2%;
+                color: white;
+                font-weight: bold;
+                line-height: 25px;" href = {{ url_for("issue_medicines", patient_id = patient_details.patient_id, medicine_id = 0  ) }} >Issue New Medicines</a>
+            {% endif %}
+
             {% endif %}
         </div>
     </div>

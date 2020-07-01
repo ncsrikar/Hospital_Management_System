@@ -5,7 +5,14 @@
         <div class="col-md-12">
             <h1 class="text-center">Welcome to ABC Hospitals</h1>
             {% if loggedin %}
-            <h3 class="text-center">View Patient Details</h3>
+            <div class="access_container" style=" margin-top: 2%; margin-bottom: 2%; margin-left: 18%;">
+                <a href="{{ url_for('register') }}" class="btn btn-info">New Patient</a>
+                <!-- <a href="{{ url_for('patientView') }}" class="btn btn-info">Search Patient Details</a> -->
+                <a href="{{ url_for('viewAll') }}" class="btn btn-info">View All Patient(s) Details</a>
+                <a href="{{ url_for('patientUpdate') }}" class="btn btn-info">Update Patient Details</a>
+                <a href="{{ url_for('patientDelete') }}" class="btn btn-info">Delete Patient Details</a>
+                </div>
+            <h3 class="text-center">Search Patient Details</h3>
             <form action="" name="get_patient" method="POST">
                 {{form.hidden_tag()}}
                 <div class="search">
@@ -23,7 +30,9 @@
                 <p>Patient Ward: {{patient_details.patient_rtype}}</p>
                 <p>Patient Status: {{patient_details.patient_status}}</p>
                 <p>Patient Address: {{patient_details.patient_address}}, {{patient_details.patient_city}}, {{patient_details.patient_state}}</p>
-                <a href="patient_discharge?id={{patient_details.patient_id}}" class="btn btn-info">Patient Discharge</a>
+               
+                <a href="patient_discharge?id={{patient_details.patient_id}}" class="btn btn-info">Generate/View Bill</a>
+            
             {% endif %}
             {% endif %}
         </div>
