@@ -263,7 +263,7 @@ def issue_medicines(patient_id,medicine_id):
                 total_cost = quantity*rate
                 if(name == '0'):
                     flash("Please select a valid Option","danger")
-                    return render_template("issue_medicine.html", availabilty = 0, form = form,loggedin = session.get('email'))
+                    return render_template("issue_medicine.html",medicine = True, availabilty = 0, form = form,loggedin = session.get('email'))
                     
                 quant = Medicine.query.filter_by(medicine_name = name).first().medicine_quantity 
                 if(quantity<quant):
@@ -291,20 +291,20 @@ def issue_medicines(patient_id,medicine_id):
                         change_total_medicines = Medicine.query.filter_by(medicine_id = id).first()
                         change_total_medicines.medicine_quantity = change_total_medicines.medicine_quantity-quantity
                         db.session.commit()
-                        return render_template("issue_medicine.html", availabilty = 0, form = form,loggedin = session.get('email'),name = name,quantity = quantity,rate= rate, total_cost = total_cost)
+                        return render_template("issue_medicine.html", medicine=True, availabilty = 0, form = form,loggedin = session.get('email'),name = name,quantity = quantity,rate= rate, total_cost = total_cost)
                         # else:
                             
                         #     return render_template("issue_medicine.html", availabilty = availabilty, form = form,form_add = form_add,loggedin = session.get('email'),name = name)
-                    return render_template("issue_medicine.html", availabilty = availabilty, form = form,form_add = form_add,loggedin = session.get('email'),name = name,quantity = quantity,rate= rate, total_cost = total_cost)
+                    return render_template("issue_medicine.html", medicine=True, availabilty = availabilty, form = form,form_add = form_add,loggedin = session.get('email'),name = name,quantity = quantity,rate= rate, total_cost = total_cost)
                 else:
                     availabilty = False
                     flash("Please select value less than {}".format(quant),"danger")
-                    return render_template("issue_medicine.html", availabilty = availabilty, form = form,loggedin = session.get('email'))
+                    return render_template("issue_medicine.html", medicine=True, availabilty = availabilty, form = form,loggedin = session.get('email'))
                 
                 
             else:
                 print("here I am ")
-                return render_template("issue_medicine.html", form = form,loggedin = session.get('email'))  
+                return render_template("issue_medicine.html", medicine=True, form = form,loggedin = session.get('email'))  
         else:
             flash("Sorry! You don't have the required permission to view this page,contact administrator",'danger')
             return redirect("/index")
@@ -391,16 +391,16 @@ def add_diagnostics(test_id, patient_id):
                             flash("Successfully added new diagnostic test","success")
                             
                     db.session.commit()
-                    return render_template("add_diag.html", form = form, form_add = form_add, loggedin = session.get('email'),name = name,charge= charge)
+                    return render_template("add_diag.html",diagnostics=True, form = form, form_add = form_add, loggedin = session.get('email'),name = name,charge= charge)
 
                 else:
-                    return render_template("add_diag.html", form = form, form_add = form_add, loggedin = session.get('email'),name = name,charge= charge)
+                    return render_template("add_diag.html",diagnostics=True, form = form, form_add = form_add, loggedin = session.get('email'),name = name,charge= charge)
 
 
                 
             else:
                 print("here I am ")
-                return render_template("add_diag.html", form = form,loggedin = session.get('email'))  
+                return render_template("add_diag.html",diagnostics=True, form = form,loggedin = session.get('email'))  
         else:
             flash("Sorry! You don't have the required permission to view this page,contact administrator",'danger')
             return redirect("/index")
