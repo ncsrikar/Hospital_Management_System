@@ -4,7 +4,7 @@
         <div class="col-md-12 text-center">
             <h1>Welcome to ABC Hospitals</h1>
             {% if loggedin %}
-            <h3>Let's get started.</h3>
+            <h3>Patient Dashboard</h3>
             <a href="{{ url_for('register') }}" class="btn btn-info">New Patient</a>
             <a href="{{ url_for('patientView') }}" class="btn btn-info">View Patient Details</a>
             <a href="{{ url_for('viewAll') }}" class="btn btn-info">View All Patient Details</a>
