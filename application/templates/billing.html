@@ -1,0 +1,107 @@
+<link rel="stylesheet" href="static/css/update_patient.css">
+    {% extends "layout.html" %}
+    {% block content %}
+        <div class="row">
+            <div class="col-md-12">
+                <h1 class="text-center">Welcome to ABC Hospitals</h1>
+                {% if loggedin %}
+                    <h3 class="text-center">Patient Billing</h3>
+                    {% if patient_details %}
+                        <p>Patient SSN ID:
+                            {{ patient_details.patient_ssn }}</p>
+                        <p>Patient Name:
+                            {{ patient_details.patient_name }}</p>
+                        <p>Patient Age:
+                            {{ patient_details.patient_age }}</p>
+                        <p>Patient DOJ:
+                            {{ patient_details.patient_doj }}</p>
+                        <p>Patient Ward:
+                            {{ patient_details.patient_rtype }}</p>
+                        <p>Patient Status:
+                            {{ patient_details.patient_status }}</p>
+                        <p>Patient Address:
+                            {{ patient_details.patient_address }},
+                            {{ patient_details.patient_city }},
+                            {{ patient_details.patient_state }}</p>
+                        <hr>
+                            <h4>Ward Charges</h4>
+                            <p>
+                                <b>Patient Ward:
+                                    {{ patient_details.patient_rtype }}
+                                    =>
+                                    {{ room_price }}
+                                    *
+                                    {{ days }}
+                                    days =
+                                    {{ ward_charges }}</b>
+                            </p>
+                            <hr>
+                                <h4>Medicines</h4>
+                                <table class="table">
+                                    <tr>
+                                        <th>Medicine Name</th>
+                                        <th>Quantity Taken</th>
+                                        <th>Rate</th>
+                                        <th>Price</th>
+                                    </tr>
+                                    {% for medicine_name, quant_issued, rate,price in  names_medicines %}
+                                        <tr>
+                                            <td>{{ medicine_name }}</td>
+                                            <td>{{ quant_issued }}</td>
+                                            <td>{{ rate }}</td>
+                                            <td>{{ price }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    <tr>
+                                        <th colspan="3">Total</th>
+                                        <th>{{ medicine_total }}</th>
+                                    </tr>
+                                </table>
+                                <hr>
+                                    <h4>Diagnostics</h4>
+                                    <table class="table">
+                                        <tr>
+                                            <th>Name of the test</th>
+                                            <th>Amount</th>
+                                        </tr>
+                                        {% for diag_name, price in  names_diag %}
+                                            <tr>
+                                                <td>{{ diag_name }}</td>
+                                                <td>{{ price }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                        <tr>
+                                            <th>Total</th>
+                                            <th>{{ diag_total }}</th>
+                                        </tr>
+                                    </table>
+                                    <hr>
+                                    <h4>Total Charges</h4>
+                                    <table class="table">
+                                        <tr>
+                                            <th>Billed Component</th>
+                                            <th>Amount Billed</th>
+                                        </tr>
+                                        <tr>
+                                            <td>Room</td>
+                                            <td>{{ward_charges}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Medicines</td>
+                                            <td>{{medicine_total}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Diagnostics</td>
+                                            <td>{{diag_total}}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Grand Total</th>
+                                            <th>{{ward_charges + medicine_total + diag_total}}</th>
+                                        </tr>
+                                    </table>
+                                    <a href="confirm_discharge?id={{ patient_details.patient_id }}" class="btn btn-info">Confirm Discharge</a>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endblock %}
