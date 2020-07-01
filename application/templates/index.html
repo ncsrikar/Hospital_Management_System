@@ -6,6 +6,8 @@
             {% if loggedin %}
             <h3>Let's get started.</h3>
             <a href="{{ url_for('patient') }}" class="btn btn-info">Patient Dashbaord</a>
+            <a href="{{ url_for('medicines') }}" class="btn btn-info">Medicines Dashbaord</a>
+            <a href="{{ url_for('diagnostics') }}" class="btn btn-info">Diagnostics Dashbaord</a>
             {% else %}
             <p>Already registered? <a href="{{ url_for('login')}}">Login</a></p>
             {% endif %}    
