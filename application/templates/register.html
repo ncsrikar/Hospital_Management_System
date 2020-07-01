@@ -1,8 +1,16 @@
 {% extends "layout.html" %}
 {% block content %}
+<div class="access_container" style=" margin-top: 2%; margin-bottom: 2%;  margin-left: 18%;">
+    <!-- <a href="{{ url_for('register') }}" class="btn btn-info">New Patient</a> -->
+    <a href="{{ url_for('patientView') }}" class="btn btn-info">Search Patient Details</a>
+    <a href="{{ url_for('viewAll') }}" class="btn btn-info">View All Patient(s) Details</a>
+    <a href="{{ url_for('patientUpdate') }}" class="btn btn-info">Update Patient Details</a>
+    <a href="{{ url_for('patientDelete') }}" class="btn btn-info">Delete Patient Details</a>
+    </div>
     <div class="row">
         <div class="col-md-6 offset-md-3">
-            <h1>Registration Page</h1>
+            
+            <h1>Patient Registration Page</h1>
             <!-- {% if login %}
             <h3>Let's get started.</h3>
             {% else %}
@@ -12,7 +20,7 @@
                 {{form.hidden_tag()}}
                 <p>
                     {{ form.patient_ssn_id.label }} <br>
-                    {{ form.patient_ssn_id }}<br>
+                    {{ form.patient_ssn_id(placeholder="Enter the 9 digit SSN ID") }}<br>
 
                 </p>
                 <p>
@@ -32,7 +40,7 @@
                 </p>
                 <p>
                     {{ form.type.label }} <br>
-                    {{ form.type }}<br>
+                    {{ form.type(class="selectpicker") }}<br>
                     
                 </p>
                 <p>
@@ -50,11 +58,17 @@
                     {{ form.state }}<br>
                     
                 </p>
-                <p>
-                   
-                    {{ form.submit() }}<br>
-                    
-                </p>
+                <p style="
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 20%;
+                
+              ">
+               
+                {{ form.submit(class="btn btn-primary",style="width:35%") }}<br>
+                
+            </p>
             </form>
 
         </div>

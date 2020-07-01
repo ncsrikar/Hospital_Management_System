@@ -29,11 +29,11 @@
                                 <b>Patient Ward:
                                     {{ patient_details.patient_rtype }}
                                     =>
-                                    {{ room_price }}
+                                    ₹{{ room_price }}
                                     *
                                     {{ days }}
                                     days =
-                                    {{ ward_charges }}</b>
+                                    ₹{{ ward_charges }}</b>
                             </p>
                             <hr>
                                 <h4>Medicines</h4>
@@ -48,13 +48,13 @@
                                         <tr>
                                             <td>{{ medicine_name }}</td>
                                             <td>{{ quant_issued }}</td>
-                                            <td>{{ rate }}</td>
-                                            <td>{{ price }}</td>
+                                            <td>₹{{ rate }}</td>
+                                            <td>₹{{ price }}</td>
                                         </tr>
                                     {% endfor %}
                                     <tr>
                                         <th colspan="3">Total</th>
-                                        <th>{{ medicine_total }}</th>
+                                        <th>₹{{ medicine_total }}</th>
                                     </tr>
                                 </table>
                                 <hr>
@@ -67,12 +67,12 @@
                                         {% for diag_name, price in  names_diag %}
                                             <tr>
                                                 <td>{{ diag_name }}</td>
-                                                <td>{{ price }}</td>
+                                                <td>₹{{ price }}</td>
                                             </tr>
                                         {% endfor %}
                                         <tr>
                                             <th>Total</th>
-                                            <th>{{ diag_total }}</th>
+                                            <th>₹{{ diag_total }}</th>
                                         </tr>
                                     </table>
                                     <hr>
@@ -84,23 +84,27 @@
                                         </tr>
                                         <tr>
                                             <td>Room</td>
-                                            <td>{{ward_charges}}</td>
+                                            <td>₹{{ward_charges}}</td>
                                         </tr>
                                         <tr>
                                             <td>Medicines</td>
-                                            <td>{{medicine_total}}</td>
+                                            <td>₹{{medicine_total}}</td>
                                         </tr>
                                         <tr>
                                             <td>Diagnostics</td>
-                                            <td>{{diag_total}}</td>
+                                            <td>₹{{diag_total}}</td>
                                         </tr>
                                         <tr>
                                             <th>Grand Total</th>
-                                            <th>{{ward_charges + medicine_total + diag_total}}</th>
+                                            <th>₹{{ward_charges + medicine_total + diag_total}}</th>
                                         </tr>
                                     </table>
+                                    {% if status %}
                                     <a href="confirm_discharge?id={{ patient_details.patient_id }}" class="btn btn-info">Confirm Discharge</a>
-                                {% endif %}
+                                    {% else %}
+                                    <p>The Patient is already Discharded</p>
+                                    {% endif %}
+                                    {% endif %}
                             {% endif %}
                         </div>
                     </div>

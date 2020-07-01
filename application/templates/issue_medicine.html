@@ -38,11 +38,11 @@
 
                 </p>
                 <p>
-                    Cost of one medicine is:<b> {{rate}}</b> <br>
-                    Total Cost of selected Quantity is: <b>{{total_cost}}</b>
+                    Cost of one medicine is:<b> ₹{{rate}}</b> <br>
+                    Total Cost of selected Quantity is: <b>₹{{total_cost}}</b>
                 </p>
                 <p>
-                    {{ form_add.add() }} <br>
+                    {{ form_add.add(class = "btn btn-primary") }} <br>
             </form>
             {% endif %}
             {% endif %}

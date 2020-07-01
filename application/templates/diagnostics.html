@@ -40,9 +40,20 @@
                 </tr>
                 {% endfor %}
               </table>
-             <a href = {{ url_for("add_diagnostics", test_id = 0, patient_id = patient_details.patient_id ) }}>Add Diagnostics</a>
+             
             {%  endif %}
-            
+            {% if patient_details %}
+            <a style="display: block;
+            width: 30%;
+            height: 8%;
+            background: #2196F3;
+            padding: 10px;
+            text-align: center;
+            border-radius: 2%;
+            color: white;
+            font-weight: bold;
+            line-height: 25px;" href = {{ url_for("add_diagnostics", test_id = 0, patient_id = patient_details.patient_id ) }}>Add Diagnostics</a>
+            {% endif %}
             {% endif %}
         </div>
     </div>
