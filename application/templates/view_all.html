@@ -31,7 +31,7 @@
                     background-color: ghostwhite;
                 }
                 th{
-                    padding:1%;
+                    padding:2%;
                     background-color: grey;
                     text-align:center;
                 }
@@ -47,7 +47,7 @@
                     <th> Patient DOJ </th>
                     <th> Patient Ward </th>
                     <th> Patient Status </th>
-                    <th>  Patient Address  </th>
+                    <th> Patient Address </th>
                 </tr>
 
                 {% for i in view_det %} 
@@ -65,9 +65,14 @@
                 {% endif %}
                 <td>{{i.patient_address}}, {{i.patient_city}}, {{i.patient_state}}</td>
                </tr>
+               
                {% endfor %}
                
+               
             </table>
+            {{ pagination.info }}
+            {{ pagination.links }}
+           
             {% else %}
             <p> No data available </p>
             {% endif %}
