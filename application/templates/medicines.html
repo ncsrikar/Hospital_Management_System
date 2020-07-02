@@ -46,6 +46,7 @@
               </table>
             {%  endif %}
             {% if patient_details %}
+            {% if (patient_details.patient_status=="Active")  %}
             <a style="display: block;
                 width: 30%;
                 height: 8%;
@@ -56,8 +57,10 @@
                 color: white;
                 font-weight: bold;
                 line-height: 25px;" href = {{ url_for("issue_medicines", patient_id = patient_details.patient_id, medicine_id = 0  ) }} >Issue New Medicines</a>
+            {% else %}
+            <p>The Patient is Discharged.</p>
             {% endif %}
-
+            {% endif %}
             {% endif %}
         </div>
     </div>
