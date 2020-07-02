@@ -1,9 +1,11 @@
 from application import app,db
 from flask import render_template,request,redirect,flash,session
+
 from application.forms import LoginForm,Register, GetPatientInfo, UpdatePatientInfo,GetMedicineNames,AddMedicine, GetDiagnostics, AddDiagnostics
 from application.models import login_details,Patient,Patient_Medicine,Medicine, Tests, Patient_Tests
 from werkzeug.security import generate_password_hash,check_password_hash
 from datetime import datetime
+from flask_paginate import get_page_args, Pagination, get_page_parameter
 ################
 @app.route("/")
 def index():
@@ -152,12 +154,20 @@ def patientView():
 def viewAll():
     if(session.get('email')):
         if(session.get("accesslevel") == 1):
-            view_det = Patient.query.order_by(Patient.patient_id).all()
+            page = request.args.get(get_page_parameter(), type=int, default=1)           
+            per_page = 1
+            offset = (page - 1) * per_page
+            # v_all = len(Patient.query.order_by(Patient.patient_id).all())
+            view_det = Patient.query.order_by(Patient.patient_id)
+            view_det_render = view_det.limit(per_page).offset(offset)
+
+            pagination = Pagination(page=page, per_page=per_page, offset=offset,
+                           total=view_det.count(), css_framework='bootstrap3')
             if(view_det is None):
                 flash('No Patient Found', 'danger')
-                return render_template("view_all.html", login= False, patient=True,loggedin = session.get('email'), view_det = view_det)
+                return render_template("view_all.html", login= False, patient=True,loggedin = session.get('email'), view_det = view_det_render, pagination=pagination)
             else:
-                return render_template("view_all.html", login= False, patient=True,loggedin = session.get('email'), view_det = view_det)
+                return render_template("view_all.html", login= False, patient=True,loggedin = session.get('email'), view_det = view_det_render, pagination= pagination)
         else:
             flash("Sorry! You don't have the required permission to view this page,contact administrator",'danger')
             return redirect("/")
