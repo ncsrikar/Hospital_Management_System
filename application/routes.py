@@ -158,7 +158,7 @@ def viewAll():
             per_page = 1
             offset = (page - 1) * per_page
             # v_all = len(Patient.query.order_by(Patient.patient_id).all())
-            view_det = Patient.query.order_by(Patient.patient_id)
+            view_det = Patient.query.filter_by(patient_status = "Active")
             view_det_render = view_det.limit(per_page).offset(offset)
 
             pagination = Pagination(page=page, per_page=per_page, offset=offset,
